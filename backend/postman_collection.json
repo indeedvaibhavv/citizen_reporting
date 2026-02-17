@@ -1,0 +1,227 @@
+{
+  "info": {
+    "name": "Environmental Intelligence API",
+    "description": "Complete API collection for testing the Environmental Intelligence System",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8000",
+      "type": "string"
+    },
+    {
+      "key": "reportId",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Health Check",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/",
+          "host": ["{{baseUrl}}"],
+          "path": [""]
+        }
+      }
+    },
+    {
+      "name": "Get Current AQI - Delhi",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/aqi/current?city=Delhi",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "aqi", "current"],
+          "query": [
+            {
+              "key": "city",
+              "value": "Delhi"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Get Current AQI - Mumbai",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/aqi/current?city=Mumbai",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "aqi", "current"],
+          "query": [
+            {
+              "key": "city",
+              "value": "Mumbai"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Get AQI History - 24 Hours",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/aqi/history?city=Delhi&range=24h",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "aqi", "history"],
+          "query": [
+            {
+              "key": "city",
+              "value": "Delhi"
+            },
+            {
+              "key": "range",
+              "value": "24h"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Get AQI History - 7 Days",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/aqi/history?city=Delhi&range=7d",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "aqi", "history"],
+          "query": [
+            {
+              "key": "city",
+              "value": "Delhi"
+            },
+            {
+              "key": "range",
+              "value": "7d"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Get All Cities AQI",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/cities",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "cities"]
+        }
+      }
+    },
+    {
+      "name": "Analyze Image",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "file",
+              "type": "file",
+              "src": "/path/to/test/image.jpg"
+            }
+          ]
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/report/analyze-image",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "report", "analyze-image"]
+        }
+      }
+    },
+    {
+      "name": "Submit Report",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "var jsonData = pm.response.json();",
+              "pm.collectionVariables.set(\"reportId\", jsonData.report_id);"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"category\": \"construction\",\n  \"latitude\": 28.6139,\n  \"longitude\": 77.2090,\n  \"location_name\": \"Connaught Place, Delhi\",\n  \"yolo_result\": {\n    \"detected_category\": \"construction\",\n    \"confidence\": 0.87,\n    \"scores\": {\n      \"air\": 0.62,\n      \"garbage\": 0.21,\n      \"construction\": 0.87,\n      \"water\": 0.05\n    },\n    \"detected_objects\": [\"construction_equipment\", \"dust_cloud\", \"building\"],\n    \"explanation\": \"High confidence detection\"\n  },\n  \"timestamp\": \"2026-02-16T10:30:00\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/report/submit",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "report", "submit"]
+        }
+      }
+    },
+    {
+      "name": "Get Report Status",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/report/status/{{reportId}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "report", "status", "{{reportId}}"]
+        }
+      }
+    },
+    {
+      "name": "Get AI Insights - Delhi",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/insights/aqi?city=Delhi",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "insights", "aqi"],
+          "query": [
+            {
+              "key": "city",
+              "value": "Delhi"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Get AI Insights - Mumbai",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/insights/aqi?city=Mumbai",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "insights", "aqi"],
+          "query": [
+            {
+              "key": "city",
+              "value": "Mumbai"
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

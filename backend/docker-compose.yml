@@ -1,0 +1,40 @@
+version: '3.8'
+
+services:
+  api:
+    build: .
+    container_name: env-intel-api
+    ports:
+      - "8000:8000"
+    environment:
+      - API_HOST=0.0.0.0
+      - API_PORT=8000
+      - LOG_LEVEL=info
+    volumes:
+      # Mount code for hot-reload during development
+      - ./:/app
+    restart: unless-stopped
+    networks:
+      - env-intel-network
+
+  # Optional: Add database for production
+  # db:
+  #   image: postgres:15
+  #   container_name: env-intel-db
+  #   environment:
+  #     - POSTGRES_USER=envuser
+  #     - POSTGRES_PASSWORD=envpass
+  #     - POSTGRES_DB=environmental_db
+  #   volumes:
+  #     - postgres_data:/var/lib/postgresql/data
+  #   ports:
+  #     - "5432:5432"
+  #   networks:
+  #     - env-intel-network
+
+networks:
+  env-intel-network:
+    driver: bridge
+
+# volumes:
+#   postgres_data:
