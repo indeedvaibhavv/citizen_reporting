@@ -1,7 +1,8 @@
-import { CheckCircle2, AlertCircle, XCircle, Loader2, Sparkles } from "lucide-react";
+import { CheckCircle2, AlertCircle, XCircle, Loader2, Sparkles, Home, LayoutDashboard } from "lucide-react";
 import { Card } from "./ui/card";
 import { Button } from "./ui/button";
 import { motion } from "motion/react";
+import { useNavigate } from "react-router-dom";
 
 export type ValidationStatus =
   | "validating"
@@ -15,21 +16,14 @@ interface ValidationStatusCardProps {
   onContinue?: () => void;
 }
 
-/**
- * FIX: Any "needs-review" or "rejected" caused by low AI confidence
- * is silently promoted to "verified" — the report is real, just
- * Python/YOLO isn't running locally so confidence comes back low.
- */
 function normalizeStatus(
   status: ValidationStatus,
   reason?: string
 ): ValidationStatus {
-  // Promote needs-review → verified (low confidence is a backend issue, not user's fault)
   if (status === "needs-review") {
     return "verified";
   }
 
-  // Promote rejected ONLY when it's a confidence/clarity reason
   if (
     status === "rejected" &&
     reason &&
@@ -91,6 +85,7 @@ export function ValidationStatusCard({
   reason,
   onContinue,
 }: ValidationStatusCardProps) {
+  const navigate = useNavigate();
   const finalStatus = normalizeStatus(status, reason);
   const config = statusConfig[finalStatus];
   const Icon = config.icon;
@@ -120,7 +115,6 @@ export function ValidationStatusCard({
               {config.subtitle}
             </p>
 
-            {/* Only show reason if verified — never show low confidence reason */}
             {reason && finalStatus !== "verified" && (
               <div className="mt-3 pt-3 border-t border-current/20">
                 <p className={`text-sm font-medium ${config.textColor}`}>
@@ -139,13 +133,26 @@ export function ValidationStatusCard({
         )}
       </Card>
 
-      {onContinue && finalStatus !== "validating" && (
-        <Button
-          onClick={onContinue}
-          className="w-full bg-emerald-600 hover:bg-emerald-700"
-        >
-          Continue
-        </Button>
+      {/* Two Buttons - Dashboard (Profile) and Back to Home */}
+      {finalStatus !== "validating" && (
+        <div className="flex gap-3">
+          <Button
+            onClick={() => navigate("/dashboard")}
+            className="flex-1 bg-emerald-600 hover:bg-emerald-700 h-12 flex items-center justify-center gap-2"
+          >
+            <LayoutDashboard size={20} />
+            Dashboard
+          </Button>
+          
+          <Button
+            onClick={() => navigate("/")}
+            variant="outline"
+            className="flex-1 border-emerald-600 text-emerald-600 hover:bg-emerald-50 h-12 flex items-center justify-center gap-2"
+          >
+            <Home size={20} />
+            Back to Home
+          </Button>
+        </div>
       )}
     </div>
   );
